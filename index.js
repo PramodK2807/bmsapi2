@@ -26,7 +26,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
 
 
-
 // SIGN UP OR REGISTER APi
 
 app.post('/register', async (req, res) => {
@@ -449,8 +448,22 @@ app.post('/watched', async (req, res) => {
 
 
 app.get('/watched', async (req, res) => {
-    
-})
+  try {
+    const watchedRecords = await Watched.find()
+      .populate('user') // user field from Watched schema
+      .populate('movie');
+    res.status(200).send({ success: true, watchedRecords });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .send({
+        success: false,
+        error: 'An error occurred while fetching watched records.',
+      });
+  }
+});
+
 
 
 
